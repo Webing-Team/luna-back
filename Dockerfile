@@ -4,7 +4,7 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /code
 
-COPY config/requirements.txt /code/config/requirements.txt
-RUN pip install -r /code/config/requirements.txt
+COPY config/requirements.txt /code/requirements.txt
+RUN pip install -r /code/requirements.txt
 
 COPY . /code/
