@@ -4,7 +4,10 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
 
-from .serializers import CreateUserSerializer, LoginUserSerializer
+from rest_framework.generics import RetrieveAPIView
+from rest_framework.exceptions import NotFound
+
+from .serializers import CreateUserSerializer, LoginUserSerializer, UserSerializer
 from .models import User
 
 
@@ -73,7 +76,31 @@ class LoginUserView(generics.ListAPIView):
             'detail': serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
             
-            
+
+# user view
+class UserDetailView(RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        token = self.kwargs.get('token')
+        try:
+            user = User.objects.get(auth_token=token)
+            return user
+        except User.DoesNotExist:
+            raise NotFound({
+                'status': 'error',
+                'detail': 'User not found.'
+            })
+
+    def retrieve(self, request, *args, **kwargs):
+        user = self.get_object()
+        serializer = self.get_serializer(user)
+        return Response({
+            'status': 'success',
+            'detail': 'The user was found!',
+            'user': serializer.data
+        })
             
         
 
