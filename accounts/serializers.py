@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from .models import User
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -43,12 +42,7 @@ class LoginUserSerializer(serializers.ModelSerializer):
         return data
         
         
-    
-
-        
-
-        
-        
-    
-    
-    
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'email']
