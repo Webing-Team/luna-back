@@ -3,8 +3,7 @@ from rest_framework import generics, serializers, status
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
-
-from .serializers import CreateUserSerializer, LoginUserSerializer
+from .serializers import CreateUserSerializer, LoginUserSerializer, UserSerializer
 from .models import User
 
 
@@ -33,7 +32,7 @@ class CreateUserView(generics.CreateAPIView):
                 token = Token.objects.create(user=user)
                 return Response({
                         'status': 'success',
-                        'detail': "User created successfully!",
+                        'detail': "User was created successfully!",
                         "user": {
                             'email': user.email,
                             'username': user.username,
@@ -72,11 +71,26 @@ class LoginUserView(generics.ListAPIView):
             'status': 'error',
             'detail': serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
-            
-            
-            
-        
 
-        
+
+# user's data view
+class UserDataView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
     
- 
+    def get(self, request, token):
+        try:
+            user = User.objects.get(auth_token=token)
+            return Response({ 
+                'status': 'success',
+                'detail': 'User was found successfully!',
+                'user': {
+                    'username': user.username,
+                    'email': user.email,
+                }
+                }, status = status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({
+                'status': 'error',
+                'detail': 'User was not found.'
+            }, status = status.HTTP_404_NOT_FOUND)
