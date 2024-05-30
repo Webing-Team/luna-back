@@ -1,1 +1,1 @@
-# luna-back
+# Luna backend repository
