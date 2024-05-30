@@ -49,12 +49,12 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     'corsheaders',
     'django_filters',
-    'channels',
-    'djangochannelsrestframework',
+    # 'channels',
+    # 'djangochannelsrestframework',
     
     # local apps
     'accounts',
-    'chats'
+    # 'chats'
 ]
 
 MIDDLEWARE = [
