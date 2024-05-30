@@ -74,7 +74,7 @@ class LoginUserView(generics.ListAPIView):
 
 
 # user's data view
-class UserDataView(generics.ListAPIView):
+class UserView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     
