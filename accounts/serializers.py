@@ -43,8 +43,11 @@ class LoginUserSerializer(serializers.ModelSerializer):
         return data
         
         
+class GetUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'email'] # TODO: add fields after all user variables are known     
     
-
         
 
         
