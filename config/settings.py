@@ -54,6 +54,9 @@ INSTALLED_APPS = [
     
     # local apps
     'accounts',
+    'friends',
+    'posts',
+    
     # 'chats'
 ]
 
