@@ -1,8 +1,8 @@
 from rest_framework.response import Response
 from rest_framework import generics, serializers, status
-from rest_framework.authtoken.models import Token
-from django.contrib.auth import authenticate
-from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .serializers import CreateUserSerializer, LoginUserSerializer, UserSerializer
 from .models import User
@@ -18,6 +18,14 @@ def error_detail(e):
     
     return error_messages
 
+def get_user_jwt(user: User):
+    refresh = RefreshToken.for_user(user)
+
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
+
 
 # registration view
 class CreateUserView(generics.CreateAPIView):
@@ -30,15 +38,12 @@ class CreateUserView(generics.CreateAPIView):
             if serializer.is_valid(raise_exception=True):
                 data = serializer.validate(data=request.data)
                 user = User.objects.create_user(**data)
-                token = Token.objects.create(user=user)
+                jwt_tokens = get_user_jwt(user)
                 return Response({
                         'status': 'success',
-                        'detail': "User created successfully!",
-                        "user": {
-                            'email': user.email,
-                            'username': user.username,
-                        },
-                        "token": token.key
+                        'detail': "User registered successfully!",
+                        'tokens': jwt_tokens
+                        # "token": token.key
                     })
 
         except serializers.ValidationError as e:
@@ -54,19 +59,15 @@ class LoginUserView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = LoginUserSerializer
     
-    def get(self, request):
+    def post(self, request):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data.get('user')
-            token, created = Token.objects.get_or_create(user=user)
+            jwt_tokens = get_user_jwt(user)
             return Response({
                 'status': 'success',
                 'detail': "Logged in successfully!",
-                'user': {
-                    'email': user.email,
-                    'username': user.username
-                    },
-                'token': token.key
+                'tokens': jwt_tokens
             }, status=status.HTTP_202_ACCEPTED)
         return Response({
             'status': 'error',
@@ -77,16 +78,24 @@ class LoginUserView(generics.ListAPIView):
 class UserView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    lookup_field = "auth_token"
+    authentication_classes = (JWTAuthentication, )
+    permission_classes = (IsAuthenticated, )
     
     def get(self, request, *args, **kwargs):
         try:
             user = self.retrieve(request, *args, **kwargs).data
-            return Response({
-                        'status': 'success',
-                        'detail': "User found!",
-                        "user": user,
-                    })
+            if user.get('username') == request.user.username:
+                return Response({
+                            'status': 'success',
+                            'data_type': "private",
+                            "user": user,
+                        })
+            else:
+                return Response({
+                    'status': 'success',
+                    'detail': "public",
+                    "user": user.get('username'),
+                })
 
         except serializers.ValidationError as e:
             data = {
