@@ -55,7 +55,7 @@ class CreateUserView(generics.CreateAPIView):
         
 
 # login view 
-class LoginUserView(generics.ListAPIView):
+class LoginUserView(generics.GenericAPIView):
     queryset = User.objects.all()
     serializer_class = LoginUserSerializer
     
@@ -93,7 +93,7 @@ class UserView(generics.RetrieveUpdateDestroyAPIView):
             else:
                 return Response({
                     'status': 'success',
-                    'detail': "public",
+                    'deta_type': "public",
                     "user": user.get('username'),
                 })
 
