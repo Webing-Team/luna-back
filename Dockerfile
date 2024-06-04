@@ -6,7 +6,7 @@ RUN apt update && apt install -y python3.11-dev build-essential  # Install devel
 
 WORKDIR /code
 
-COPY requirements.txt /code/req.txt
+COPY requirements.txt /code/requirements.txt
 
 RUN pip install -r /code/req.txt
 
