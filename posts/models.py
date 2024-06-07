@@ -1,3 +1,17 @@
 from django.db import models
+from django.conf import settings
+from django.utils.text import slugify
 
-# Create your models here.
+
+class Post(models.Model):
+    title = models.CharField(max_length=65)
+    text = models.CharField(max_length=150)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='posts'
+    )
+    id = models.IntegerField(primary_key=True,unique=True)
+
+
+    def __str__(self):
+        # Post by {self.user} -
+        return f'id {self.id}'
