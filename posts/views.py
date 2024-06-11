@@ -19,9 +19,9 @@ class CreatePostView(generics.CreateAPIView):
 
 
 class PostListView(generics.ListAPIView):
-    """ Список постов на стене пользователя """
+    """Список постов на стене пользователя"""
     serializer_class = ListPostSerializer
 
     def get_queryset(self):
-        return Post.objects.filter(
-            user_id=self.kwargs.get('pk')).select_related('user')
+        user_id = self.kwargs.get('id')
+        return Post.objects.filter(user_id=user_id)
