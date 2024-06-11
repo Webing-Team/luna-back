@@ -9,7 +9,6 @@ class Post(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='posts'
     )
-    id = models.IntegerField(primary_key=True,unique=True)
 
 
     def __str__(self):
