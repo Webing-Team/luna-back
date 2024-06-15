@@ -1,5 +1,5 @@
+from rest_framework import generics, serializers, status, mixins
 from rest_framework.response import Response
-from rest_framework import generics, serializers, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -38,6 +38,7 @@ class CreateUserView(generics.CreateAPIView):
             if serializer.is_valid(raise_exception=True):
                 data = serializer.validate(data=request.data)
                 user = User.objects.create_user(**data)
+                user.set_password(data['password'])
                 jwt_tokens = get_user_jwt(user)
                 return Response({
                         'status': 'success',
