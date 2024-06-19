@@ -1,3 +1,4 @@
+from django.utils.timezone import now
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.contrib.auth import authenticate
@@ -24,20 +25,16 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault(is_superuser=True)
         
         return User.objects.create_user(email=email, username=username, password=password, **extra_fields)
-    
-    def login(self, request, email: str, password: str):
-        auth_user = authenticate(request=request, email=email, password=password)       
-        if auth_user:
-            token, created = Token.objects.get_or_create(user=auth_user)
-            return token
-        else:
-            return None
-    
+        
 
 # Create your models here.
 class User(AbstractUser):
     username = models.CharField("Username", max_length=255, unique=True)
     email = models.EmailField('Email', unique=True)
+    is_online = models.BooleanField(default=False)
+    was_online_at = models.DateTimeField(auto_now=True)
+    friends = models.ManyToManyField('self')
+    
     
     # add additional fields
     
