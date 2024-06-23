@@ -27,7 +27,6 @@ class UserManager(BaseUserManager):
         return User.objects.create_user(email=email, username=username, password=password, **extra_fields)
         
 
-# Create your models here.
 class User(AbstractUser):
     username = models.CharField("Username", max_length=255, unique=True)
     email = models.EmailField('Email', unique=True)
@@ -36,7 +35,10 @@ class User(AbstractUser):
     friends = models.ManyToManyField('self')
     
     
-    # add additional fields
-    
-    
-    
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.TextField(blank=True)
+    friends = models.ManyToManyField('self', symmetrical=True, blank=True)
+    subscribe = models.ManyToManyField('self', blank=True, related_name='user_subscriptions')
+    subscribers = models.ManyToManyField('self', related_name='user_subscribers', blank=True)
