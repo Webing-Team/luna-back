@@ -20,6 +20,7 @@ class JWTAuthMiddleware:
                 
                 scope['user'] = user
             except Exception as e:
+                print(e)
                 scope['user'] = None
         else:
             scope['user'] = AnonymousUser()
