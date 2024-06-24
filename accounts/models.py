@@ -40,5 +40,5 @@ class Profile(models.Model):
     picture = models.ImageField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     friends = models.ManyToManyField('self', symmetrical=True, blank=True)
-    subscribe = models.ManyToManyField('self', blank=True, related_name='user_subscriptions')
+    subscribed_for = models.ManyToManyField('self', blank=True, related_name='user_subscriptions')
     subscribers = models.ManyToManyField('self', related_name='user_subscribers', blank=True)
