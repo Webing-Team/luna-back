@@ -6,25 +6,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .serializers import CreateUserSerializer, LoginUserSerializer, UserSerializer
 from .models import User
-
-
-# function for manage error details
-def error_detail(e):
-    errors = e.detail
-    
-    error_messages = []
-    for field, messages in errors.items():
-        error_messages.append(f'{field}: {messages[0].__str__()}')
-    
-    return error_messages
-
-def get_user_jwt(user: User):
-    refresh = RefreshToken.for_user(user)
-
-    return {
-        'refresh': str(refresh),
-        'access': str(refresh.access_token),
-    }
+from .utils import get_user_jwt, error_detail, check_expired_tokens
 
 
 # registration view
@@ -64,6 +46,7 @@ class LoginUserView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data.get('user')
+            check_expired_tokens(user)
             jwt_tokens = get_user_jwt(user)
             return Response({
                 'status': 'success',
