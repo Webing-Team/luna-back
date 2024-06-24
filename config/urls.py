@@ -28,8 +28,7 @@ urlpatterns = [
     path('api/token/verify', TokenVerifyView.as_view(), name='token_verify'),
     path('api/v1/accounts/', include("accounts.urls")),
     path('api/v1/posts/', include("posts.urls")),
-    path('api/v1/friends/', include('friends.urls'))
-    # path('api/v1/friends/', include('friends.urls')),
-    # path('api/vi1/posts/', include('posts.urls')),
+    path('api/v1/friends/', include('friends.urls')),
+    path('api/v1/groups/', include('groups.urls'))
     # path('chats/', include('chats.urls')),
 ]
