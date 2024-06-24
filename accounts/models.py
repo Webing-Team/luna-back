@@ -32,13 +32,13 @@ class User(AbstractUser):
     email = models.EmailField('Email', unique=True)
     is_online = models.BooleanField(default=False)
     was_online_at = models.DateTimeField(auto_now=True)
-    friends = models.ManyToManyField('self')
     
     
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    bio = models.TextField(blank=True)
+    picture = models.ImageField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
     friends = models.ManyToManyField('self', symmetrical=True, blank=True)
     subscribe = models.ManyToManyField('self', blank=True, related_name='user_subscriptions')
     subscribers = models.ManyToManyField('self', related_name='user_subscribers', blank=True)
