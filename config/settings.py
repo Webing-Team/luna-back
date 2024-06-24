@@ -31,7 +31,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['13.60.66.192', "0.0.0.0", "127.0.0.1", 'localhost']
+ALLOWED_HOSTS = ['13.60.66.192', "0.0.0.0", "127.0.0.1", 'localhost', 'likely-picked-arachnid.ngrok-free.app']
 
 AUTH_USER_MODEL = 'accounts.User'
 # Application definition
@@ -47,19 +47,20 @@ INSTALLED_APPS = [
     # side apps
     'whitenoise.runserver_nostatic',
     'rest_framework',
+    'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'django_filters',
-    # 'channels',
-    # 'djangochannelsrestframework',
+    'channels',
+    'djangochannelsrestframework',
     
     # local apps
     'accounts',
     'friends',
     'posts',
     
-    # 'chats'
+    'chats'
 ]
 
 MIDDLEWARE = [
@@ -184,24 +185,24 @@ CHANNEL_LAYERS = {
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 # local db for development
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-# db that would be created inside docker-compose 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': '',
-        'HOST': 'db', 
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# db that would be created inside docker-compose 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'postgres',
+#         'USER': 'postgres',
+#         'PASSWORD': '',
+#         'HOST': 'db', 
+#         'PORT': '5432',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
